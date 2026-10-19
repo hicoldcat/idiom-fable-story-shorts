@@ -5,7 +5,8 @@
 用法::
 
     python validate_script_doc.py 成语寓言-20261019101530.md \
-        --name-prefix 成语寓言 --min 55 --max 70
+        --name-prefix 成语寓言 --min 55 --max 70 \
+        [--topic-anchor "狐狸,狐假,葡萄,刺猬"]
 
 三级结论:
   PASS  合格
@@ -27,12 +28,20 @@ FAIL 项（全部通过才返回退出码 0）:
  12. 中文话题标签 5–8 个；英文话题标签 3–6 个
  13. 儿童吸引力分析存在且具体
  14. 未出现省略式表述
+ 15. 传了 ``--topic-anchor`` 时，选题 1 必须命中任一主题锚词
 
 WARN 项（仅提示，不阻断交付）:
   - 英文旁白里出现疑似超纲难词（内置清单 + 长度 ≥13 字母）
   - 中文标题 > 26 汉字 / 英文标题 > 14 词
   - 标题出现低质标题党用词
   - 文档出现「第三部分」等额外章节
+  - 传了 ``--topic-anchor`` 时，选题 2–10 中有未命中任何锚词的（可能发散过远）
+
+主题锚词（``--topic-anchor``）:
+  用户指定了方向（"狐狸""努力"）或具体故事（"狐假虎威"）时，由调用方提炼 2–4 个锚词，
+  逗号分隔传入。比对范围是「中文标题 + 故事出处」—— 故事名固定写在出处里，
+  只看标题会漏判（主题=努力 时标题往往写"铁棒""龟兔"，并不会出现"努力"二字）。
+  锚词应覆盖故事名 / 主角 / 关键物件 / 寓意词，且不要用单字（"虎"会误命中"马虎"）。
 
 单词统计口径（与 content-spec 一致）:
   去掉 Markdown 标记后按空白切分，含字母或数字的 token 计 1 词；
@@ -408,7 +417,41 @@ def check_duplicates(blocks, rep: Report):
         rep.add(True, "查重", f"{len(names)} 个故事互不重复")
 
 
-def validate(path: Path, want: int, lo: int, hi: int, prefix=None) -> Report:
+def check_topic_focus(blocks, anchors, rep: Report):
+    """用户指定方向 / 故事时的防跑偏检查。
+
+    选题 1 必须命中任一锚词（否则 FAIL —— 用户明确要求第一条就是该主题）；
+    选题 2–10 未命中只提示（WARN），可能是发散过远，也可能是换了说法。
+
+    比对范围取「中文标题 + 故事出处」。为什么不含「故事与寓意」：那是自由文本，
+    容易被模板化文案带进无关词（一句"狐狸借老虎的威风"就能让十条全命中锚词），
+    反而失去防跑偏的意义。故事名固定写在出处里，比标题更可靠。
+    """
+    if not anchors or not blocks:
+        return
+
+    def _text(block_lines):
+        f = extract_fields(block_lines)
+        return " ".join([f.get("zh_title", ""), f.get("source", "")]).strip()
+
+    texts = [(num, _text(block)) for num, _h, block in blocks]
+
+    num1, text1 = texts[0]
+    hit1 = [a for a in anchors if a in text1]
+    title1 = extract_fields(blocks[0][2]).get("zh_title", "").replace("\n", " ").strip()
+    rep.add(bool(hit1), f"选题 {num1}",
+            f"选题 1 命中主题锚词 {hit1 or '（无）'}：{title1[:40]}"
+            + ("" if hit1 else f"；锚词表={anchors}。若确已贴合主题，"
+                               f"把该说法补进 --topic-anchor 而不是改标题"))
+
+    missed = [num for num, text in texts[1:] if not any(a in text for a in anchors)]
+    if missed:
+        rep.warn("主题聚焦", f"选题 {missed} 未命中任何主题锚词 {anchors}，检查是否发散过远")
+    else:
+        rep.add(True, "主题聚焦", f"选题 2–{texts[-1][0]} 均命中主题锚词 {anchors}")
+
+
+def validate(path: Path, want: int, lo: int, hi: int, prefix=None, anchors=None) -> Report:
     rep = Report()
     text = path.read_text(encoding="utf-8")
     lines = text.splitlines()
@@ -429,6 +472,8 @@ def validate(path: Path, want: int, lo: int, hi: int, prefix=None) -> Report:
 
     for num, _heading, block_lines in blocks:
         check_topic(num, extract_fields(block_lines), lo, hi, rep)
+
+    check_topic_focus(blocks, anchors, rep)
 
     if "第三部分" in text:
         rep.warn("结构", "文档含「第三部分」——交付文档只保留第一部分与第二部分"
@@ -476,6 +521,9 @@ def main(argv=None) -> int:
     ap.add_argument("--loose-words", action="store_true",
                     help="把词数越界从 FAIL 降级为 WARN（用于长版/短版需求）")
     ap.add_argument("--no-summary", action="store_true", help="不打印速览表")
+    ap.add_argument("--topic-anchor", default="",
+                    help="指定了方向 / 故事时的主题锚词，逗号分隔（如 \"狐狸,狐假,葡萄,刺猬\"）；"
+                         "提供后选题 1 必须命中任一锚词（否则 FAIL），选题 2–10 未命中仅 WARN")
     args = ap.parse_args(argv)
 
     path = Path(args.md_path)
@@ -485,7 +533,8 @@ def main(argv=None) -> int:
 
     prefix = args.name_prefix
 
-    rep = validate(path, args.topics, args.lo, args.hi, prefix)
+    rep = validate(path, args.topics, args.lo, args.hi, prefix,
+                   [a.strip() for a in re.split(r"[,，、;；]", args.topic_anchor) if a.strip()])
 
     if args.loose_words:
         rep.items = [

@@ -25,6 +25,20 @@ idiom. Both were tried and both were wrong:
 | Split one idiom into 10 episodes | 10 topics = 10 different stories |
 | Repeat the same story in several topics | Each topic is a different idiom / fable |
 
+## When the user names a theme
+
+Two cases, both change how the 10 stories are picked:
+
+- **A direction** ("foxes", "effort", "being clever"): all 10 stories must sit inside that
+  direction — hit via character, plot, or moral — and topic #1 is the most classic, most
+  on-theme story inside it, not a spin-off.
+- **One specific story** ("tell 狐假虎威"): topic #1 is that story, played straight; topics
+  #2–10 cluster around it via same character / same moral type / same conflict / same source.
+
+Either way: no drifting to unrelated idioms, characters may repeat but **plots may not**,
+and the default "spread topics across categories" rule is **suspended**. It is still 10
+*different* stories — never 10 episodes of one story.
+
 ## When to use
 
 Trigger when the request involves any of:
@@ -65,13 +79,15 @@ Warnings never affect the exit code.
 | `--min` / `--max` | `55` / `70` | **Hard** voiceover word-count band (30s ↔ word count) |
 | `--loose-words` | off | Downgrade out-of-band word counts from FAIL to WARN |
 | `--no-summary` | off | Skip the per-topic overview table |
+| `--topic-anchor` | empty | Comma-separated anchors distilled from the user's theme (story name / character / key object / moral word). When given, topic #1 must hit one (**FAIL** if none); topics #2–10 that miss only WARN |
 
 ## Results: PASS / WARN / FAIL
 
 - **PASS** — check satisfied
 - **WARN** — advisory only, does not block delivery. Raised for likely hard vocabulary,
   over-long titles, a title that omits its own story name, low-quality clickbait wording,
-  or an extra section such as 「第三部分」
+  an extra section such as 「第三部分」, or — with `--topic-anchor` — topics #2–10 that hit
+  none of the anchors (likely drifting off-theme)
 - **FAIL** — must be fixed
 
 ## What the validator checks
@@ -92,6 +108,8 @@ FAIL-level:
 12. Chinese hashtags 5–8; English hashtags 3–6
 13. Child-appeal rationale present and specific
 14. No elided sections
+15. With `--topic-anchor`: topic #1 hits at least one anchor (i.e. it actually is the
+    user's theme, not a spin-off)
 
 WARN-level:
 
