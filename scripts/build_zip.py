@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """把整个技能项目打包成可上传的 zip，输出到 dist/。
 
-- 版本号取自 SKILL.md frontmatter 的 version
+- 包名格式：<name>-<version>-<YYYYMMDDHHmmss>.zip
+- 版本号取自 SKILL.md frontmatter 的 version，时间戳取当前真实时间
 - zip 内层是技能同名文件夹（<name>/SKILL.md ...）
 - 排除 .git/、dist/、__pycache__/ 等无关内容
 
@@ -14,6 +15,7 @@ from __future__ import annotations
 import re
 import sys
 import zipfile
+from datetime import datetime
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -73,7 +75,8 @@ def main() -> int:
         return 1
 
     DIST.mkdir(parents=True, exist_ok=True)
-    out = DIST / f"{name}-v{version}.zip"
+    stamp = datetime.now().strftime("%Y%m%d%H%M%S")
+    out = DIST / f"{name}-{version}-{stamp}.zip"
 
     with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as zf:
         for path, rel in files:

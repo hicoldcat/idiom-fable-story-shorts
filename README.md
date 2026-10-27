@@ -92,7 +92,7 @@ idiom-fable-story-shorts/
 python scripts/build_zip.py
 ```
 
-产物：`dist/idiom-fable-story-shorts-v1.0.0.zip`。zip 内层是技能同名文件夹（`idiom-fable-story-shorts/SKILL.md` …），可直接上传；已排除 `.git/`、`dist/`、`__pycache__/`、`*.pyc`，以及只服务于仓库自身的 `.gitignore`、`package.bat`。版本号取自 `SKILL.md` frontmatter 的 `version`。
+产物：`dist/idiom-fable-story-shorts-1.0.0-20261027144852.zip`，命名规则 `<技能名>-<版本号>-<时间戳>`（时间戳格式 `YYYYMMDDHHmmss`，每次打包取当前时间，所以不会覆盖旧包）。zip 内层是技能同名文件夹（`idiom-fable-story-shorts/SKILL.md` …），可直接上传；已排除 `.git/`、`dist/`、`__pycache__/`、`*.pyc`，以及只服务于仓库自身的 `.gitignore`、`package.bat`。版本号取自 `SKILL.md` frontmatter 的 `version`。
 
 ## 环境要求
 
