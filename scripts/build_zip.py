@@ -22,8 +22,8 @@ SKILL_MD = ROOT / "SKILL.md"
 
 # 目录名命中即整棵跳过
 EXCLUDE_DIRS = {".git", "dist", "__pycache__", ".idea", ".vscode", ".workbuddy"}
-# 文件名命中即跳过
-EXCLUDE_FILES = {".DS_Store", "Thumbs.db"}
+# 文件名命中即跳过（.gitignore / package.bat 属仓库自身，不进分发包）
+EXCLUDE_FILES = {".DS_Store", "Thumbs.db", ".gitignore", "package.bat"}
 # 后缀命中即跳过
 EXCLUDE_SUFFIXES = {".pyc", ".pyo"}
 
