@@ -1,6 +1,11 @@
 ---
 name: idiom-fable-story-shorts
+version: 1.0.0
+display_name: 成语寓言英语短视频
+display_name_en: Idiom & Fable Story Shorts
 description: 成语 / 寓言 → 30 秒英语讲故事短视频的选题与中英双语脚本生成器。一次性产出 10 条选题，每条对应一个成语或寓言，用 55–70 个简单英文单词把故事讲完，附中文译文、核心单词、双语贴文与话题标签，让孩子听懂故事、记住这个成语的意思。当用户要求做成语故事、寓言故事的英语短视频、英语启蒙故事、儿童讲故事脚本时使用。产出结构固定的 Markdown 文件，并强制通过校验脚本。用户指定方向（如"狐狸""努力"）或具体故事（如"狐假虎威"）时，第 1 条必须直给该主题，其余 9 条在同簇内收敛，不得发散到无关故事。
+description_zh: 把成语和寓言做成 10 条 30 秒英语讲故事短视频，一条视频一个故事，用 55–70 个简单英文单词讲完，配中文译文、核心单词、双语贴文与话题标签，面向 5–10 岁儿童英语启蒙。
+description_en: Turn idioms and fables into 10 × 30-second English storytelling videos — one story per video in 55–70 simple English words, with Chinese translation, a vocabulary card, bilingual posts and hashtags. Built for kids aged 5–10 learning English.
 ---
 
 # 成语·寓言 → 30 秒英语讲故事短视频
