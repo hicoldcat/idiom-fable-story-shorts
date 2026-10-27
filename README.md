@@ -1,138 +1,99 @@
-# idiom-fable-story-shorts
+# 成语寓言英语短视频选题与脚本生成器
 
-Turn idioms and fables into **10 × 30-second English storytelling videos** — one story per
-video, told in **55–70 simple English words**, with a Chinese translation, a 3–5 word
-vocabulary card, and social posts + hashtags for Douyin / Xiaohongshu / X / YouTube Shorts.
+> 技能 ID：`idiom-fable-story-shorts` ｜ 版本：`1.0.0`
 
-Output is a real `.md` file that must pass the bundled validator before delivery.
+把成语和寓言做成 **10 条 30 秒英语讲故事短视频**：一条视频一个故事，用 **55–70 个简单英文单词**讲完，配中文译文、3–5 个核心单词、双语社媒贴文与话题标签。每次跑完落盘一份真实的 `.md`，必须通过自带校验脚本才能交付。
 
-## What one topic is
+## 一条选题是什么
 
 ```
-one idiom  →  one story  →  55–70 English words  →  30-second animated video
+一个成语 → 一个故事 → 55–70 个英文单词 → 30 秒动画
 ```
 
-The video does exactly one thing: **tells the story**. A child who watches it should be
-able to retell "who did what, and how it ended" — and that is also how they learn what the
-idiom means.
+视频只做一件事：**把这个故事讲给孩子听**。孩子看完能复述"谁做了什么、结果怎样"，也就懂了这个成语的意思。
 
-This is **not** a science explainer, and **not** a multi-episode breakdown of a single
-idiom. Both were tried and both were wrong:
-
-| ❌ Wrong | ✅ Right |
+| ❌ 不要 | ✅ 要 |
 |---|---|
-| Tell 狐假虎威, then explain tiger pupils and fox ears | Tell 狐假虎威 and stop |
-| Split one idiom into 10 episodes | 10 topics = 10 different stories |
-| Repeat the same story in several topics | Each topic is a different idiom / fable |
+| 讲完狐假虎威，接着科普老虎的瞳孔、狐狸的耳朵 | 讲完狐假虎威就收 |
+| 把一个成语拆成 10 集 | 10 条选题 = 10 个不同故事 |
+| 几个选题重复同一个故事 | 每条一个不同的成语 / 寓言 |
 
-## When the user names a theme
+## 什么时候用
 
-Two cases, both change how the 10 stories are picked:
+- 成语 / 寓言 的英语短视频、英语启蒙故事、儿童讲故事脚本
+- 中英双语故事旁白
+- 抖音 / 小红书 / YouTube Shorts / X 的社媒文案与话题标签
 
-- **A direction** ("foxes", "effort", "being clever"): all 10 stories must sit inside that
-  direction — hit via character, plot, or moral — and topic #1 is the most classic, most
-  on-theme story inside it, not a spin-off.
-- **One specific story** ("tell 狐假虎威"): topic #1 is that story, played straight; topics
-  #2–10 cluster around it via same character / same moral type / same conflict / same source.
+不适用：单纯查成语意思、只要一条脚本、视频剪辑与配音合成。
 
-Either way: no drifting to unrelated idioms, characters may repeat but **plots may not**,
-and the default "spread topics across categories" rule is **suspended**. It is still 10
-*different* stories — never 10 episodes of one story.
+## 用户指定主题时怎么选 10 个故事
 
-## When to use
+| 用户给的 | 选题 1 | 选题 2–10 |
+|---|---|---|
+| 什么都没给 | 成语 6–7 个 + 寓言 3–4 个，题材分散 | 同左 |
+| 一个方向（"狐狸""努力""聪明"） | 该方向下最经典的那个故事 | 按主角 / 情节 / 寓意三条路径命中，禁止跨域 |
+| 一个具体故事（"狐假虎威"） | 就是它，原情节原寓意，不加戏 | 按同主角 / 同寓意 / 同冲突 / 同出处收敛 |
 
-Trigger when the request involves any of:
+通用：允许角色重复，**禁止情节重复**；10 条永远是 10 个不同的故事。
 
-- 成语故事 / 寓言故事 的英语短视频、英语讲故事、英语启蒙故事
-- 中英双语故事旁白与英语讲故事脚本
-- 抖音 / 小红书 / YouTube Shorts / X 社媒文案与话题标签
+## 四拍结构（30 秒 ≈ 55–70 词）
 
-Not for: plain idiom explanations, single-script requests, or video editing / voiceover production.
-
-## The four-beat story
-
-| Beat | Time | Words | Job |
+| 拍 | 时间 | 词数 | 任务 |
 |---|---|---|---|
-| 起 Open | 0–5s | 10–15 | time + who + first action |
-| 承 Build | 5–15s | 15–20 | what happens, the conflict appears |
-| 转 Turn | 15–24s | 15–20 | the twist, the result |
-| 合 Meaning | 24–30s | 8–12 | one line that states what the story means |
+| 起 Open | 0–5s | 10–15 | 时间 + 谁 + 第一个动作 |
+| 承 Build | 5–15s | 15–20 | 发生了什么，冲突出现 |
+| 转 Turn | 15–24s | 15–20 | 转折，结果出来 |
+| 合 Meaning | 24–30s | 8–12 | 一句话点出寓意 |
 
-Beat 4 is a **meaning line**, not a plot summary. `The tiger was strong. The fox was clever.
-Clever won that day.` — not `Then the fox walked away.`
+第 4 拍是**寓意句**，不是情节总结：`The tiger was strong. The fox was clever. Clever won that day.` 而不是 `Then the fox walked away.`
 
-## Quick start
+## 校验
 
 ```bash
-python scripts/validate_script_doc.py \
-  "成语寓言-20261019101530.md" \
+python scripts/validate_script_doc.py "成语寓言-20261019101530.md" \
   --name-prefix "成语寓言" --min 55 --max 70
 ```
 
-Exit code `0` = no failures, `1` = at least one failure (with a repair list printed).
-Warnings never affect the exit code.
+退出码 `0` = 没有 FAIL，`1` = 至少一项 FAIL（会打印待修清单）。WARN 只做提示，不影响退出码。
 
-| Flag | Default | Meaning |
+| 参数 | 默认 | 说明 |
 |---|---|---|
-| `--name-prefix` | `成语寓言` | Expected filename prefix (spec: `<prefix>-<YYYYMMDDHHmmss>.md`); pass the theme name for a custom theme |
-| `--topics` | `10` | Required number of topic sections |
-| `--min` / `--max` | `55` / `70` | **Hard** voiceover word-count band (30s ↔ word count) |
-| `--loose-words` | off | Downgrade out-of-band word counts from FAIL to WARN |
-| `--no-summary` | off | Skip the per-topic overview table |
-| `--topic-anchor` | empty | Comma-separated anchors distilled from the user's theme (story name / character / key object / moral word). When given, topic #1 must hit one (**FAIL** if none); topics #2–10 that miss only WARN |
+| `--name-prefix` | `成语寓言` | 文件名前缀，格式 `<前缀>-<YYYYMMDDHHmmss>.md`；指定主题时换成主题名 |
+| `--topics` | `10` | 要求的选题数 |
+| `--min` / `--max` | `55` / `70` | 英文旁白词数带（硬性，30 秒时长与词数绑定） |
+| `--loose-words` | 关 | 越界词数从 FAIL 降级为 WARN |
+| `--no-summary` | 关 | 跳过第一部分的总览表 |
+| `--topic-anchor` | 空 | 主题锚词（故事名 / 主角 / 关键物件 / 寓意词）。传了则选题 1 必须命中，否则 FAIL |
 
-## Results: PASS / WARN / FAIL
+校验范围一句话：文件名格式、恰好 10 条且序号连续、故事不重复、必备字段齐全、英文旁白 55–70 词且标注与实测一致、中英贴文与标签数量、以及传了 `--topic-anchor` 时选题 1 必须真的是用户点名的主题。逐项明细看脚本 `--help` 或源码。
 
-- **PASS** — check satisfied
-- **WARN** — advisory only, does not block delivery. Raised for likely hard vocabulary,
-  over-long titles, a title that omits its own story name, low-quality clickbait wording,
-  an extra section such as 「第三部分」, or — with `--topic-anchor` — topics #2–10 that hit
-  none of the anchors (likely drifting off-theme)
-- **FAIL** — must be fixed
+## 目录结构
 
-## What the validator checks
+```
+idiom-fable-story-shorts/
+├── SKILL.md                   触发条件、Step 0–7 流程、硬性规则、内容红线
+├── README.md
+├── references/
+│   ├── content-spec.md        完整创作规范
+│   ├── output-template.md     输出骨架（字段标记是校验锚点，不可改名）
+│   └── story-bank.md          2 条完整示范 + 45 个备选故事
+├── scripts/
+│   ├── validate_script_doc.py 校验脚本
+│   └── build_zip.py           打包到 dist/
+├── package.bat                双击打包
+└── dist/                      打包产物（已 git 忽略）
+```
 
-FAIL-level:
+## 打包发布
 
-1. Filename matches `<prefix>-<YYYYMMDDHHmmss>.md` (**no platform segment**), timestamp parseable
-2. Document contains 「第一部分」 and 「第二部分」
-3. Exactly 10 topic sections, numbering contiguous
-4. **No idiom / fable reused across topics**
-5. Overview table has 10 data rows, none with an empty title
-6. Per topic: all required fields present, both titles non-empty
-7. English voiceover within 55–70 words (hard; `--loose-words` downgrades to WARN)
-8. Declared word count matches the measured count
-9. English voiceover contains no Chinese characters
-10. Vocabulary card has 3–5 items
-11. Chinese voiceover ≥30 hanzi; Chinese post 30–80 hanzi; English post 20–50 words
-12. Chinese hashtags 5–8; English hashtags 3–6
-13. Child-appeal rationale present and specific
-14. No elided sections
-15. With `--topic-anchor`: topic #1 hits at least one anchor (i.e. it actually is the
-    user's theme, not a spin-off)
+双击 `package.bat`，或直接跑：
 
-WARN-level:
+```bash
+python scripts/build_zip.py
+```
 
-- Likely hard words (built-in list + any token ≥13 letters)
-- Chinese title >26 hanzi / English title >14 words
-- Title omits its own story name (hurts search, not an error)
-- Low-quality clickbait wording in the title
-- Document contains an extra section beyond Part 1 / Part 2
+产物：`dist/idiom-fable-story-shorts-v1.0.0.zip`。zip 内层是技能同名文件夹（`idiom-fable-story-shorts/SKILL.md` …），可直接上传；已排除 `.git/`、`dist/`、`__pycache__/` 和 `*.pyc`。版本号取自 `SKILL.md` frontmatter 的 `version`。
 
-Word counting rule (fixed, so results are reproducible): strip Markdown marks, split on
-whitespace, count every token containing a letter or digit. Numbers, abbreviations and
-hyphenated words each count as one word.
+## 环境要求
 
-## Files
-
-| Path | Purpose |
-|---|---|
-| `SKILL.md` | Triggers, defaults, Step 0–7 workflow, hard rules, content red lines |
-| `references/content-spec.md` | Full authoring spec: four-beat structure, vocabulary ceiling, accuracy, format & naming |
-| `references/output-template.md` | Markdown skeleton — field markers are load-bearing for the validator |
-| `references/story-bank.md` | 2 fully annotated sample scripts + 45 candidate stories with sources |
-| `scripts/validate_script_doc.py` | Validator; standard library only |
-
-## Requirements
-
-- Python **3.10+** (standard library only — no third-party dependencies)
+Python **3.10+**，只用标准库，无第三方依赖。

@@ -8,7 +8,9 @@ description_zh: 把成语和寓言做成 10 条 30 秒英语讲故事短视频�
 description_en: Turn idioms and fables into 10 × 30-second English storytelling videos — one story per video in 55–70 simple English words, with Chinese translation, a vocabulary card, bilingual posts and hashtags. Built for kids aged 5–10 learning English.
 ---
 
-# 成语·寓言 → 30 秒英语讲故事短视频
+# 成语寓言英语短视频选题与脚本生成器
+
+> 一个成语 / 寓言 → 一条 30 秒英语讲故事短视频。产出 10 条选题的中英双语脚本，落盘成 `.md` 并通过校验。
 
 ## 这个 Skill 做什么
 
@@ -26,7 +28,7 @@ description_en: Turn idioms and fables into 10 × 30-second English storytelling
 
 ---
 
-## 三条铁律（踩过坑，写在这里）
+## 三条铁律
 
 | #   | 规则                                     | 反例                                              |
 | --- | ---------------------------------------- | ------------------------------------------------- |
@@ -86,9 +88,9 @@ description_en: Turn idioms and fables into 10 × 30-second English storytelling
 
 读取三份文件，它们是执行依据，不得凭记忆简化：
 
-- `references/content-spec.md` —— 完整创作规范（四拍故事结构、词汇红线、准确性红线）
-- `references/output-template.md` —— Markdown 输出骨架，字段标记是校验脚本的定位锚点
-- `references/story-bank.md` —— 故事库（完整脚本示范 + 备选故事清单）
+- `references/content-spec.md` —— 完整内容规范（四拍故事结构、词汇红线、准确性、格式与命名），执行时的权威依据
+- `references/output-template.md` —— Markdown 输出骨架，逐字段照填；字段标记是校验锚点，不可改名
+- `references/story-bank.md` —— 2 条完整脚本示范 + 45 个备选故事（含出处与一句话情节），选中题与找同簇故事都从这里取
 
 ### Step 1 — 锁定参数
 
@@ -220,13 +222,13 @@ FAIL 覆盖：文件名格式、选题数 ≠ 10 或序号不连续、**同一�
 英文旁白混入中文、中文贴文汉字数、英文贴文词数、中英标签数量、总览表行数、
 **选题 1 未命中任何主题锚词**（仅当传了 `--topic-anchor`）。
 
+> 需要放宽词数时（例如用户明确要 45 秒长版），加 `--loose-words` 把越界降级为 WARN。
+
 ### Step 6 — 有 FAIL 就修，修完重跑
 
 **只要脚本报 FAIL，就必须改内容并重跑，直到没有 FAIL。**
 不得因为"看起来差不多"就跳过，也不得手动改标注数字骗过校验（脚本以实测值为准）。
 WARN 项需在完成说明里如实提及，但不必强行消除。
-
-> 需要放宽词数时（例如用户明确要 45 秒长版），加 `--loose-words` 把越界降级为 WARN。
 
 ### Step 7 — 交付
 
@@ -308,14 +310,3 @@ WARN 项需在完成说明里如实提及，但不必强行消除。
 1. 不出现血腥、恐怖、残酷细节（"咬死""流血"改成"抓住了""吓跑了"）。
 2. 不做"活体伤害"示范。
 3. 结尾的寓意要正向，但不能说教过头 —— 一句话就够，别讲道理讲三段。
-
----
-
-## 资源
-
-| 文件                             | 用途                                                                         |
-| -------------------------------- | ---------------------------------------------------------------------------- |
-| `references/content-spec.md`     | 完整内容规范（四拍故事结构、词汇红线、准确性、格式与命名），执行时的权威依据 |
-| `references/output-template.md`  | Markdown 输出骨架，逐字段照填（字段标记是校验锚点，不可改名）                |
-| `references/story-bank.md`       | 2 条完整脚本示范 + 45 个备选故事（含出处与一句话情节）                       |
-| `scripts/validate_script_doc.py` | 校验脚本，Step 5 必跑；有 FAIL 必须修复后重跑                                |
