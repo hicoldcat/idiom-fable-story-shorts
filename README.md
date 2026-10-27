@@ -64,7 +64,7 @@ Clever won that day.` — not `Then the fox walked away.`
 ## Quick start
 
 ```bash
-python skills/idiom-fable-story-shorts/scripts/validate_script_doc.py \
+python scripts/validate_script_doc.py \
   "成语寓言-20261019101530.md" \
   --name-prefix "成语寓言" --min 55 --max 70
 ```
